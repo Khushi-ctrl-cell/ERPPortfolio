@@ -1,0 +1,40 @@
+@model ERPPortfolio.ViewModels.ProductTreeNodeViewModel
+@{
+    var nodeGroupId = "tree-node-" + Model.ItemId;
+    var hasChildren = Model.ChildNodes != null && Model.ChildNodes.Count > 0;
+}
+
+<div class="tree-node" style="--tree-level:@Model.Level">
+    <div class="tree-card neumorphic-panel">
+        <div class="tree-card-main">
+            @if (hasChildren)
+            {
+                <button type="button" class="tree-toggle" data-tree-toggle="@nodeGroupId">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </button>
+            }
+            else
+            {
+                <span class="tree-placeholder"></span>
+            }
+            <div>
+                <strong>@Model.Name</strong>
+                <p>@Model.Description</p>
+            </div>
+        </div>
+        <div class="tree-meta">
+            <span><i class="fa-solid fa-weight-scale"></i> @Model.Weight.ToString("N2")</span>
+            <a href="@Url.Action("Edit", "Item", new { id = Model.ItemId })" class="button button-ghost button-xs">Edit</a>
+        </div>
+    </div>
+
+    @if (hasChildren)
+    {
+        <div class="tree-children" data-tree-group="@nodeGroupId">
+            @foreach (var childNode in Model.ChildNodes)
+            {
+                @Html.Partial("_ProductTreeNode", childNode)
+            }
+        </div>
+    }
+</div>

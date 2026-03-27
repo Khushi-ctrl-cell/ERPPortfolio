@@ -1,0 +1,108 @@
+@model ERPPortfolio.ViewModels.ItemListViewModel
+@{
+    ViewBag.Title = "Item Management";
+}
+
+<section class="panel-card neumorphic-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Search, filter, export</p>
+            <h3>Product Item Registry</h3>
+        </div>
+        <div class="header-actions">
+            <a class="button button-ghost" href="@Url.Action("ExportCsv", "Item", new { searchTerm = Model.FilterModel.SearchTerm, minWeight = Model.FilterModel.MinWeight, maxWeight = Model.FilterModel.MaxWeight })">
+                <i class="fa-solid fa-file-arrow-down"></i> Export CSV
+            </a>
+            <a class="button" href="@Url.Action("Create", "Item")">
+                <i class="fa-solid fa-plus"></i> Add Item
+            </a>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Index", "Item", FormMethod.Get, new { @class = "filter-bar neumorphic-inset" }))
+    {
+        <div class="filter-field">
+            <label>Search by name</label>
+            <input type="text" name="searchTerm" value="@Model.FilterModel.SearchTerm" class="form-input" placeholder="Finance Suite" />
+        </div>
+        <div class="filter-field">
+            <label>Min weight</label>
+            <input type="number" name="minWeight" value="@Model.FilterModel.MinWeight" class="form-input" step="0.01" min="0" />
+        </div>
+        <div class="filter-field">
+            <label>Max weight</label>
+            <input type="number" name="maxWeight" value="@Model.FilterModel.MaxWeight" class="form-input" step="0.01" min="0" />
+        </div>
+        <div class="filter-actions">
+            <button type="submit" class="button">Apply Filters</button>
+            <a href="@Url.Action("Index", "Item")" class="button button-ghost">Reset</a>
+        </div>
+    }
+
+    <div class="table-shell">
+        <table class="erp-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Weight</th>
+                    <th>Parent</th>
+                    <th class="actions-column">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.PagedItems.Items.Count > 0)
+                {
+                    foreach (var productItem in Model.PagedItems.Items)
+                    {
+                        <tr>
+                            <td><strong>@productItem.Name</strong></td>
+                            <td>@productItem.Description</td>
+                            <td>@productItem.Weight.ToString("N2")</td>
+                            <td>@(productItem.ParentItem != null ? productItem.ParentItem.Name : "Root Category")</td>
+                            <td class="actions-column">
+                                <a class="table-link" href="@Url.Action("Edit", "Item", new { id = productItem.ItemId })">Edit</a>
+                                @using (Html.BeginForm("Delete", "Item", FormMethod.Post, new { @class = "inline-form" }))
+                                {
+                                    @Html.AntiForgeryToken()
+                                    @Html.Hidden("id", productItem.ItemId)
+                                    <button type="submit" class="table-link danger-link" onclick="return confirm('Delete this item and reattach its children?');">Delete</button>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="5" class="empty-state">No product items matched the selected filters.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.PagedItems.TotalPages > 1)
+    {
+        <div class="pagination-shell">
+            @if (Model.PagedItems.HasPreviousPage)
+            {
+                <a class="page-chip" href="@Url.Action("Index", new { page = Model.PagedItems.PageNumber - 1, searchTerm = Model.FilterModel.SearchTerm, minWeight = Model.FilterModel.MinWeight, maxWeight = Model.FilterModel.MaxWeight })">
+                    <i class="fa-solid fa-angle-left"></i>
+                </a>
+            }
+            @for (var pageNumber = 1; pageNumber <= Model.PagedItems.TotalPages; pageNumber++)
+            {
+                <a class="page-chip @(pageNumber == Model.PagedItems.PageNumber ? "active" : string.Empty)" href="@Url.Action("Index", new { page = pageNumber, searchTerm = Model.FilterModel.SearchTerm, minWeight = Model.FilterModel.MinWeight, maxWeight = Model.FilterModel.MaxWeight })">
+                    @pageNumber
+                </a>
+            }
+            @if (Model.PagedItems.HasNextPage)
+            {
+                <a class="page-chip" href="@Url.Action("Index", new { page = Model.PagedItems.PageNumber + 1, searchTerm = Model.FilterModel.SearchTerm, minWeight = Model.FilterModel.MinWeight, maxWeight = Model.FilterModel.MaxWeight })">
+                    <i class="fa-solid fa-angle-right"></i>
+                </a>
+            }
+        </div>
+    }
+</section>

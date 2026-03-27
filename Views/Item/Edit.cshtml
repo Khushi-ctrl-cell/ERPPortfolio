@@ -1,0 +1,26 @@
+@model ERPPortfolio.ViewModels.ItemFormViewModel
+@{
+    ViewBag.Title = "Edit Product Item";
+}
+
+<section class="panel-card neumorphic-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Hierarchy maintenance</p>
+            <h3>Refine product item details</h3>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Edit", "Item", FormMethod.Post, new { @class = "erp-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(model => model.ItemId)
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+        @Html.Partial("_Form", Model)
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index", "Item")" class="button button-ghost">Cancel</a>
+            <button type="submit" class="button">Save Changes</button>
+        </div>
+    }
+</section>

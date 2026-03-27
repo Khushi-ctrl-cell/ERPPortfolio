@@ -1,0 +1,62 @@
+@model ERPPortfolio.ViewModels.AuditLogListViewModel
+@{
+    ViewBag.Title = "Audit Logs";
+}
+
+<section class="panel-card neumorphic-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Traceability and governance</p>
+            <h3>System Audit Trail</h3>
+        </div>
+    </div>
+
+    <div class="table-shell">
+        <table class="erp-table">
+            <thead>
+                <tr>
+                    <th>Action</th>
+                    <th>Timestamp</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.PagedLogs.Items.Count > 0)
+                {
+                    foreach (var auditLog in Model.PagedLogs.Items)
+                    {
+                        <tr>
+                            <td><span class="badge">@auditLog.Action</span></td>
+                            <td>@auditLog.Timestamp.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</td>
+                            <td>@auditLog.Details</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="3" class="empty-state">No audit logs are available.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @if (Model.PagedLogs.TotalPages > 1)
+    {
+        <div class="pagination-shell">
+            @if (Model.PagedLogs.HasPreviousPage)
+            {
+                <a class="page-chip" href="@Url.Action("Index", new { page = Model.PagedLogs.PageNumber - 1 })"><i class="fa-solid fa-angle-left"></i></a>
+            }
+            @for (var pageNumber = 1; pageNumber <= Model.PagedLogs.TotalPages; pageNumber++)
+            {
+                <a class="page-chip @(pageNumber == Model.PagedLogs.PageNumber ? "active" : string.Empty)" href="@Url.Action("Index", new { page = pageNumber })">@pageNumber</a>
+            }
+            @if (Model.PagedLogs.HasNextPage)
+            {
+                <a class="page-chip" href="@Url.Action("Index", new { page = Model.PagedLogs.PageNumber + 1 })"><i class="fa-solid fa-angle-right"></i></a>
+            }
+        </div>
+    }
+</section>

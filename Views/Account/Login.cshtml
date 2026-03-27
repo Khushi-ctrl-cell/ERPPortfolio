@@ -1,0 +1,52 @@
+@model ERPPortfolio.ViewModels.LoginViewModel
+@{
+    ViewBag.Title = "Secure Login";
+}
+
+<section class="login-shell">
+    <div class="login-intro">
+        <span class="eyebrow">ASP.NET MVC ERP</span>
+        <h1>Command your enterprise operations with a premium control center.</h1>
+        <p>Session-based access, audit-ready workflows, recursive item structures, and a recruiter-friendly enterprise design system.</p>
+        <div class="feature-ribbon">
+            <div class="mini-card neumorphic-panel"><i class="fa-solid fa-shield-halved"></i><span>Secure access</span></div>
+            <div class="mini-card neumorphic-panel"><i class="fa-solid fa-sitemap"></i><span>Unlimited hierarchy</span></div>
+            <div class="mini-card neumorphic-panel"><i class="fa-solid fa-file-csv"></i><span>CSV exports</span></div>
+        </div>
+    </div>
+
+    <div class="login-panel neumorphic-panel">
+        <div class="panel-header">
+            <h2>Welcome Back</h2>
+            <p>Use the seeded admin account to enter the ERP workspace.</p>
+        </div>
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "erp-form" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+
+            <div class="form-field floating-field">
+                @Html.TextBoxFor(model => model.Username, new { @class = "form-input", placeholder = " " })
+                @Html.LabelFor(model => model.Username)
+                @Html.ValidationMessageFor(model => model.Username, "", new { @class = "field-validation" })
+            </div>
+
+            <div class="form-field floating-field">
+                @Html.PasswordFor(model => model.Password, new { @class = "form-input", placeholder = " " })
+                @Html.LabelFor(model => model.Password)
+                @Html.ValidationMessageFor(model => model.Password, "", new { @class = "field-validation" })
+            </div>
+
+            <button type="submit" class="button button-block">
+                <i class="fa-solid fa-arrow-right-to-bracket"></i> Sign In
+            </button>
+        }
+
+        <div class="login-hint neumorphic-inset">
+            <strong>Seeded access</strong>
+            <span>Username: admin</span>
+            <span>Password: Admin@123</span>
+        </div>
+    </div>
+</section>

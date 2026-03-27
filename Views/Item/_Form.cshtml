@@ -1,0 +1,31 @@
+@model ERPPortfolio.ViewModels.ItemFormViewModel
+
+<div class="form-grid">
+    <div class="form-field floating-field">
+        @Html.TextBoxFor(model => model.Name, new { @class = "form-input", placeholder = " " })
+        @Html.LabelFor(model => model.Name)
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "field-validation" })
+    </div>
+
+    <div class="form-field floating-field">
+        @Html.TextAreaFor(model => model.Description, new { @class = "form-input form-textarea", placeholder = " ", rows = "5" })
+        @Html.LabelFor(model => model.Description)
+        @Html.ValidationMessageFor(model => model.Description, "", new { @class = "field-validation" })
+    </div>
+
+    <div class="dual-field-grid">
+        <div class="form-field floating-field">
+            @Html.TextBoxFor(model => model.Weight, new { @class = "form-input", placeholder = " ", type = "number", step = "0.01", min = "0.01" })
+            @Html.LabelFor(model => model.Weight)
+            @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "field-validation" })
+        </div>
+
+        <div class="form-field">
+            @Html.LabelFor(model => model.ParentItemId, new { @class = "select-label" })
+            <div class="select-shell">
+                @Html.DropDownListFor(model => model.ParentItemId, Model.ParentOptions, new { @class = "form-select" })
+            </div>
+            @Html.ValidationMessageFor(model => model.ParentItemId, "", new { @class = "field-validation" })
+        </div>
+    </div>
+</div>

@@ -1,0 +1,30 @@
+@model IList<ERPPortfolio.ViewModels.ProductTreeNodeViewModel>
+@{
+    ViewBag.Title = "Hierarchy Tree";
+}
+
+<section class="panel-card neumorphic-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Recursive visualization</p>
+            <h3>Product Item Tree View</h3>
+        </div>
+        <a class="button" href="@Url.Action("Create", "Item")">
+            <i class="fa-solid fa-plus"></i> Add Nested Item
+        </a>
+    </div>
+
+    <div class="tree-shell">
+        @if (Model != null && Model.Count > 0)
+        {
+            foreach (var rootNode in Model)
+            {
+                @Html.Partial("_ProductTreeNode", rootNode)
+            }
+        }
+        else
+        {
+            <p class="empty-state">No hierarchy exists yet. Create an item to begin building the tree.</p>
+        }
+    </div>
+</section>

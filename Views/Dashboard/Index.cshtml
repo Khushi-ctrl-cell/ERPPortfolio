@@ -1,0 +1,76 @@
+@model ERPPortfolio.ViewModels.DashboardViewModel
+@{
+    ViewBag.Title = "Executive Dashboard";
+}
+
+<section class="page-grid">
+    <div class="metrics-grid">
+        <article class="metric-card neumorphic-panel">
+            <div class="metric-icon blue"><i class="fa-solid fa-boxes-stacked"></i></div>
+            <div><span class="metric-label">Total Items</span><strong>@Model.TotalItems</strong></div>
+        </article>
+        <article class="metric-card neumorphic-panel">
+            <div class="metric-icon green"><i class="fa-solid fa-weight-scale"></i></div>
+            <div><span class="metric-label">Total Weight</span><strong>@Model.TotalWeight.ToString("N2")</strong></div>
+        </article>
+        <article class="metric-card neumorphic-panel">
+            <div class="metric-icon gold"><i class="fa-solid fa-layer-group"></i></div>
+            <div><span class="metric-label">Parent Categories</span><strong>@Model.TotalParentCategories</strong></div>
+        </article>
+    </div>
+
+    <div class="dashboard-layout">
+        <section class="panel-card neumorphic-panel">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">Live operations feed</p>
+                    <h3>Recent Activity Logs</h3>
+                </div>
+                <a class="button button-ghost" href="@Url.Action("Index", "AuditLog")">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i> View All
+                </a>
+            </div>
+
+            <div class="activity-feed">
+                @if (Model.RecentAuditLogs != null && Model.RecentAuditLogs.Count > 0)
+                {
+                    foreach (var auditLog in Model.RecentAuditLogs)
+                    {
+                        <article class="activity-item neumorphic-inset">
+                            <div class="activity-badge">@auditLog.Action</div>
+                            <div>
+                                <strong>@auditLog.Details</strong>
+                                <span>@auditLog.Timestamp.ToLocalTime().ToString("dd MMM yyyy, hh:mm tt")</span>
+                            </div>
+                        </article>
+                    }
+                }
+                else
+                {
+                    <p class="empty-state">No audit activity has been recorded yet.</p>
+                }
+            </div>
+        </section>
+
+        <section class="panel-card neumorphic-panel quick-links">
+            <div class="panel-heading">
+                <div>
+                    <p class="eyebrow">Fast actions</p>
+                    <h3>Operational Shortcuts</h3>
+                </div>
+            </div>
+            <a class="shortcut-card neumorphic-inset" href="@Url.Action("Create", "Item")">
+                <i class="fa-solid fa-plus"></i>
+                <div><strong>Create Product Item</strong><span>Add a new ERP node with weight and parent mapping.</span></div>
+            </a>
+            <a class="shortcut-card neumorphic-inset" href="@Url.Action("Index", "Item")">
+                <i class="fa-solid fa-magnifying-glass-chart"></i>
+                <div><strong>Search Inventory Graph</strong><span>Filter items by name and weighted range in one pass.</span></div>
+            </a>
+            <a class="shortcut-card neumorphic-inset" href="@Url.Action("Tree", "Item")">
+                <i class="fa-solid fa-diagram-project"></i>
+                <div><strong>Review Hierarchy Tree</strong><span>Explore nested product relationships with collapse controls.</span></div>
+            </a>
+        </section>
+    </div>
+</section>

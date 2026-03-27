@@ -1,0 +1,25 @@
+@model ERPPortfolio.ViewModels.ItemFormViewModel
+@{
+    ViewBag.Title = "Create Product Item";
+}
+
+<section class="panel-card neumorphic-panel">
+    <div class="panel-heading">
+        <div>
+            <p class="eyebrow">Master data authoring</p>
+            <h3>Create a new ERP node</h3>
+        </div>
+    </div>
+
+    @using (Html.BeginForm("Create", "Item", FormMethod.Post, new { @class = "erp-form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true, "", new { @class = "validation-summary" })
+        @Html.Partial("_Form", Model)
+
+        <div class="form-actions">
+            <a href="@Url.Action("Index", "Item")" class="button button-ghost">Cancel</a>
+            <button type="submit" class="button">Create Item</button>
+        </div>
+    }
+</section>

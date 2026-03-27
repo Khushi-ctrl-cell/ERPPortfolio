@@ -1,0 +1,144 @@
+@{
+    var currentAction = ViewContext.RouteData.Values["action"] != null ? ViewContext.RouteData.Values["action"].ToString() : string.Empty;
+    var currentController = ViewContext.RouteData.Values["controller"] != null ? ViewContext.RouteData.Values["controller"].ToString() : string.Empty;
+    var fullName = Session["CurrentFullName"] != null ? Session["CurrentFullName"].ToString() : "Guest User";
+    var isAuthenticated = Session["CurrentUserId"] != null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewBag.Title - ERP Portfolio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" />
+    <link href="@Url.Content("~/Content/site.css")" rel="stylesheet" />
+</head>
+<body class="erp-shell">
+    @if (currentController == "Account" && currentAction == "Login")
+    {
+        <main class="auth-shell">
+            @RenderBody()
+        </main>
+    }
+    else
+    {
+        <div class="app-frame">
+            <aside class="sidebar neumorphic-panel">
+                <div class="brand-block">
+                    <div class="brand-mark">
+                        <i class="fa-solid fa-cubes-stacked"></i>
+                    </div>
+                    <div>
+                        <h1>Vertex ERP</h1>
+                        <p>Enterprise command layer</p>
+                    </div>
+                </div>
+
+                <nav class="nav-menu">
+                    <a class="nav-link @(currentController == "Dashboard" ? "active" : string.Empty)" href="@Url.Action("Index", "Dashboard")">
+                        <i class="fa-solid fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a class="nav-link @(currentController == "Item" && currentAction != "Tree" ? "active" : string.Empty)" href="@Url.Action("Index", "Item")">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                        <span>Items</span>
+                    </a>
+                    <a class="nav-link @(currentController == "Item" && currentAction == "Tree" ? "active" : string.Empty)" href="@Url.Action("Tree", "Item")">
+                        <i class="fa-solid fa-sitemap"></i>
+                        <span>Tree View</span>
+                    </a>
+                    <a class="nav-link @(currentController == "AuditLog" ? "active" : string.Empty)" href="@Url.Action("Index", "AuditLog")">
+                        <i class="fa-solid fa-clock-rotate-left"></i>
+                        <span>Logs</span>
+                    </a>
+                </nav>
+
+                @if (isAuthenticated)
+                {
+                    <div class="sidebar-footer neumorphic-inset">
+                        <div class="profile-chip">
+                            <div class="profile-avatar">@fullName.Substring(0, 1)</div>
+                            <div>
+                                <strong>@fullName</strong>
+                                <span>Operations Admin</span>
+                            </div>
+                        </div>
+                        @using (Html.BeginForm("Logout", "Account", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <button type="submit" class="button button-ghost button-block">
+                                <i class="fa-solid fa-right-from-bracket"></i> Logout
+                            </button>
+                        }
+                    </div>
+                }
+            </aside>
+
+            <div class="content-area">
+                <header class="topbar neumorphic-panel">
+                    <div>
+                        <p class="eyebrow">Portfolio-grade ERP showcase</p>
+                        <h2>@ViewBag.Title</h2>
+                    </div>
+                    <div class="status-pill">
+                        <i class="fa-solid fa-signal"></i>
+                        <span>Live Workspace</span>
+                    </div>
+                </header>
+
+                <main class="page-content">
+                    @RenderBody()
+                </main>
+            </div>
+        </div>
+    }
+
+    <div class="toast-stack">
+        @if (TempData["SuccessToast"] != null)
+        {
+            <div class="toast toast-success">
+                <i class="fa-solid fa-circle-check"></i>
+                <span>@TempData["SuccessToast"]</span>
+            </div>
+        }
+        @if (TempData["ErrorToast"] != null)
+        {
+            <div class="toast toast-error">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <span>@TempData["ErrorToast"]</span>
+            </div>
+        }
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        (function () {
+            var toastCollection = document.querySelectorAll('.toast');
+            window.setTimeout(function () {
+                toastCollection.forEach(function (toastElement) {
+                    toastElement.classList.add('toast-hide');
+                });
+            }, 3400);
+
+            document.querySelectorAll('[data-tree-toggle]').forEach(function (toggleButton) {
+                toggleButton.addEventListener('click', function () {
+                    var nodeId = toggleButton.getAttribute('data-tree-toggle');
+                    var treeGroup = document.querySelector('[data-tree-group="' + nodeId + '"]');
+                    if (!treeGroup) {
+                        return;
+                    }
+
+                    var isCollapsed = treeGroup.classList.toggle('collapsed');
+                    toggleButton.classList.toggle('collapsed', isCollapsed);
+                });
+            });
+        })();
+    </script>
+    @RenderSection("scripts", required: false)
+</body>
+</html>
